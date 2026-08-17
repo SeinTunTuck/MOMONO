@@ -16,7 +16,8 @@ import {
   X,
 } from "lucide-react";
 
-const asset = (filename) => `${import.meta.env.BASE_URL}assets/${filename}`;
+const assetRoot = import.meta.env.VITE_PUBLIC_ASSET_BASE || `${import.meta.env.BASE_URL}assets/`;
+const asset = (filename) => `${assetRoot}${filename}`;
 
 const products = [
   {
