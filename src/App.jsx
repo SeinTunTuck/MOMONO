@@ -16,6 +16,8 @@ import {
   X,
 } from "lucide-react";
 
+const asset = (filename) => `${import.meta.env.BASE_URL}assets/${filename}`;
+
 const products = [
   {
     id: "starter",
@@ -23,7 +25,7 @@ const products = [
     subtitle: "1 clip + 2 refill pads",
     price: 399,
     category: "blind box",
-    image: "/assets/starter-box.png",
+    image: asset("starter-box.png"),
     badge: "BEST START",
     color: "#e8ad43",
   },
@@ -33,18 +35,18 @@ const products = [
     subtitle: "5 individually sealed pads",
     price: 115,
     category: "refills",
-    image: "/assets/refill-five.png",
+    image: asset("refill-five.png"),
     badge: "5 PADS",
     color: "#8ca648",
   },
 ];
 
 const guardians = [
-  { id: "school", name: "School Guardian", note: "Core character", image: "/assets/school-guardian.png", color: "#78983f" },
-  { id: "rain", name: "Rain Guardian", note: "Core character", image: "/assets/rain-guardian.png", color: "#eabf3a" },
-  { id: "birthday", name: "Birthday Guardian", note: "Core character", image: "/assets/birthday-guardian.png", color: "#e97e9a" },
-  { id: "dream", name: "Dream Guardian", note: "Core character", image: "/assets/dream-guardian.png", color: "#8b73b7" },
-  { id: "secret", name: "Secret Guardian", note: "Rare surprise", image: "/assets/secret-guardian.png", color: "#33415d" },
+  { id: "school", name: "School Guardian", note: "Core character", image: asset("school-guardian.png"), color: "#78983f" },
+  { id: "rain", name: "Rain Guardian", note: "Core character", image: asset("rain-guardian.png"), color: "#eabf3a" },
+  { id: "birthday", name: "Birthday Guardian", note: "Core character", image: asset("birthday-guardian.png"), color: "#e97e9a" },
+  { id: "dream", name: "Dream Guardian", note: "Core character", image: asset("dream-guardian.png"), color: "#8b73b7" },
+  { id: "secret", name: "Secret Guardian", note: "Rare surprise", image: asset("secret-guardian.png"), color: "#33415d" },
 ];
 
 const formatPrice = (price) => `฿${price.toLocaleString("en-US")}`;
@@ -107,7 +109,7 @@ function App() {
       <header className="navbar">
         <button className="icon-button mobile-menu-button" aria-label="Open menu" onClick={() => setMobileOpen(true)}><Menu /></button>
         <a className="brand" href="#top" aria-label="MOMONO home">
-          <img src="/assets/momono-logo.png" alt="MOMONO" />
+          <img src={asset("momono-logo.png")} alt="MOMONO" />
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
           <a href="#shop">Shop</a>
@@ -127,7 +129,7 @@ function App() {
 
       <main id="top">
         <section className="hero">
-          <img className="hero-image" src="/assets/momono-world.png" alt="Children and MOMONO guardian characters playing outdoors" />
+          <img className="hero-image" src={asset("momono-world.png")} alt="Children and MOMONO guardian characters playing outdoors" />
           <div className="hero-shade" />
           <div className="hero-copy">
             <div className="eyebrow light"><span /> Meet the guardian club</div>
@@ -204,7 +206,7 @@ function App() {
 
         <section className="how-section" id="how-it-works">
           <div className="how-visual">
-            <img src="/assets/starter-box.png" alt="MOMONO starter blind box, clip and refill pad" />
+            <img src={asset("starter-box.png")} alt="MOMONO starter blind box, clip and refill pad" />
             <span className="orbit orbit-one">3 DAYS</span>
             <span className="orbit orbit-two">DEET FREE</span>
           </div>
@@ -227,9 +229,9 @@ function App() {
           </div>
           <div className="benefit-grid">
             {[
-              { image: "/assets/benefit-bio.png", title: "Bio-based active protection", copy: "Catnip oil and lemon eucalyptus oil meet in a gentle, plant-forward formula." },
-              { image: "/assets/benefit-guardians.png", title: "Five stories to collect", copy: "School, Rain, Birthday, Dream—and a rare Secret Guardian waiting to be found." },
-              { image: "/assets/benefit-refill.png", title: "Refillable by nature", copy: "Keep the character you love. Replace only the small compressed pad inside." },
+              { image: asset("benefit-bio.png"), title: "Bio-based active protection", copy: "Catnip oil and lemon eucalyptus oil meet in a gentle, plant-forward formula." },
+              { image: asset("benefit-guardians.png"), title: "Five stories to collect", copy: "School, Rain, Birthday, Dream—and a rare Secret Guardian waiting to be found." },
+              { image: asset("benefit-refill.png"), title: "Refillable by nature", copy: "Keep the character you love. Replace only the small compressed pad inside." },
             ].map((benefit, index) => (
               <article className="benefit-card" key={benefit.title}>
                 <div className="benefit-number">0{index + 1}</div>
@@ -272,7 +274,7 @@ function App() {
 
       <footer>
         <div className="footer-main">
-          <div className="footer-brand"><img src="/assets/momono-logo.png" alt="MOMONO" /><p>Your tiny guardian, everywhere.</p></div>
+          <div className="footer-brand"><img src={asset("momono-logo.png")} alt="MOMONO" /><p>Your tiny guardian, everywhere.</p></div>
           <div><h3>Explore</h3><a href="#shop">Shop all</a><a href="#guardians">Guardians</a><a href="#how-it-works">How it works</a></div>
           <div><h3>Help</h3><a href="mailto:momonoguard@gmail.com">Contact us</a><a href="#faq">Shipping & returns</a><a href="#faq">FAQs</a></div>
           <div><h3>Follow the adventure</h3><a href="https://instagram.com/momono.th">Instagram · @momono.th</a><a href="https://www.tiktok.com/@momono.th">TikTok · @momono.th</a><a href="tel:+66627790805">+66 62 779 0805</a></div>
@@ -283,7 +285,7 @@ function App() {
       {mobileOpen && (
         <div className="full-overlay mobile-overlay">
           <button className="overlay-close" onClick={() => setMobileOpen(false)} aria-label="Close menu"><X /></button>
-          <img src="/assets/momono-logo.png" alt="MOMONO" />
+          <img src={asset("momono-logo.png")} alt="MOMONO" />
           <nav>{[["Shop", "#shop"], ["Guardians", "#guardians"], ["How it works", "#how-it-works"], ["Our story", "#our-story"]].map(([label, link]) => <a key={link} href={link} onClick={() => setMobileOpen(false)}>{label}<ArrowRight /></a>)}</nav>
         </div>
       )}
@@ -313,7 +315,7 @@ function App() {
               <div className="eyebrow"><span /> One surprise inside</div>
               <h2>Guardian Starter<br />Blind Box</h2>
               <p className="reveal-intro">Every box contains <strong>one mystery Guardian Clip</strong> plus <strong>two individually sealed refill pads</strong>.</p>
-              <img src="/assets/starter-box.png" alt="MOMONO Guardian Starter Blind Box" />
+              <img src={asset("starter-box.png")} alt="MOMONO Guardian Starter Blind Box" />
               <div className="reveal-buy-row"><strong>{formatPrice(products[0].price)}</strong><button onClick={() => { addToCart(products[0]); setBlindBoxOpen(false); }}>Add blind box <ShoppingBag size={18} /></button></div>
             </div>
             <div className="reveal-characters-panel">
