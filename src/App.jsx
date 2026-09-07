@@ -3,366 +3,711 @@ import {
   ArrowRight,
   Check,
   ChevronRight,
-  Heart,
+  CircleUserRound,
+  Gamepad2,
+  Gift,
+  Home,
   Leaf,
-  Menu,
   Minus,
+  Pause,
+  Play,
   Plus,
-  Recycle,
-  Search,
+  ScanLine,
+  Settings,
   ShieldCheck,
   ShoppingBag,
   Sparkles,
+  Trophy,
+  UserRound,
   X,
 } from "lucide-react";
 
-const assetRoot = import.meta.env.VITE_PUBLIC_ASSET_BASE || `${import.meta.env.BASE_URL}assets/`;
-const asset = (filename) => `${assetRoot}${filename}`;
-
+const root = `${import.meta.env.BASE_URL}assets/`;
+const img = (name) =>
+  `${root}${name === "school-2026.png" ? "school-guardian.png" : name}`;
+const money = (value) => `฿${value.toLocaleString("en-US")}`;
+const tabs = [
+  ["home", "Home", Home],
+  ["shop", "Shop", ShoppingBag],
+  ["game", "Game", Gamepad2],
+  ["points", "Points", Trophy],
+  ["profile", "Profile", UserRound],
+];
 const products = [
   {
     id: "starter",
     name: "Guardian Starter Blind Box",
-    subtitle: "1 clip + 2 refill pads",
-    price: 399,
-    category: "blind box",
-    image: asset("starter-box.png"),
-    badge: "BEST START",
-    color: "#e8ad43",
+    short: "1 mystery Guardian Clip + 2 refill pad",
+    price: 329,
+    image: img("box-2026.png"),
   },
   {
-    id: "refill-five",
+    id: "refill",
     name: "Guardian Refill Pack",
-    subtitle: "5 individually sealed pads",
-    price: 115,
-    category: "refills",
-    image: asset("refill-five.png"),
-    badge: "5 PADS",
-    color: "#8ca648",
+    short: "5 individually sealed refill pads",
+    price: 189,
+    image: img("refill-2026.png"),
   },
 ];
 
-const guardians = [
-  { id: "school", name: "School Guardian", note: "Core character", image: asset("school-guardian.png"), color: "#78983f" },
-  { id: "rain", name: "Rain Guardian", note: "Core character", image: asset("rain-guardian.png"), color: "#eabf3a" },
-  { id: "birthday", name: "Birthday Guardian", note: "Core character", image: asset("birthday-guardian.png"), color: "#e97e9a" },
-  { id: "dream", name: "Dream Guardian", note: "Core character", image: asset("dream-guardian.png"), color: "#8b73b7" },
-  { id: "secret", name: "Secret Guardian", note: "Rare surprise", image: asset("secret-guardian.png"), color: "#33415d" },
-];
-
-const formatPrice = (price) => `฿${price.toLocaleString("en-US")}`;
-
-function App() {
-  const [cart, setCart] = useState([]);
-  const [cartOpen, setCartOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [liked, setLiked] = useState([]);
-  const [toast, setToast] = useState("");
-  const [blindBoxOpen, setBlindBoxOpen] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = cartOpen || searchOpen || mobileOpen || blindBoxOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [cartOpen, searchOpen, mobileOpen, blindBoxOpen]);
-
-  useEffect(() => {
-    if (!toast) return undefined;
-    const timer = window.setTimeout(() => setToast(""), 2200);
-    return () => window.clearTimeout(timer);
-  }, [toast]);
-
-  const searchResults = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    if (!normalized) return products;
-    return products.filter((product) => `${product.name} ${product.subtitle}`.toLowerCase().includes(normalized));
-  }, [query]);
-
-  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  const addToCart = (product) => {
-    setCart((items) => {
-      const existing = items.find((item) => item.id === product.id);
-      if (existing) return items.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
-      return [...items, { ...product, quantity: 1 }];
-    });
-    setToast(`${product.name} joined your adventure!`);
-  };
-
-  const updateQuantity = (id, amount) => {
-    setCart((items) => items
-      .map((item) => item.id === id ? { ...item, quantity: item.quantity + amount } : item)
-      .filter((item) => item.quantity > 0));
-  };
-
-  const scrollToShop = () => document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" });
-
+function Logo() {
   return (
-    <div className="app-shell">
-      <div className="announcement">
-        <span>Free Thailand delivery over ฿799</span>
-        <span className="announcement-center"><Sparkles size={14} /> Tiny guardian. Big adventures. <Sparkles size={14} /></span>
-        <span>Every pad protects for up to 3 days</span>
+    <img
+      className="app-logo"
+      src={img("brand-2026.png")}
+      alt="MOMONO - Your Tiny Guardian, Everywhere"
+    />
+  );
+}
+function BottomNav({ active, onChange }) {
+  return (
+    <nav className="bottom-nav" aria-label="App navigation">
+      {tabs.map(([id, label, Icon]) => (
+        <button
+          key={id}
+          className={active === id ? "active" : ""}
+          onClick={() => onChange(id)}
+        >
+          <Icon />
+          <span>{label}</span>
+        </button>
+      ))}
+    </nav>
+  );
+}
+function Welcome({ onStart }) {
+  return (
+    <main className="welcome-screen">
+      <span className="float-leaf leaf-a">◆</span>
+      <span className="float-leaf leaf-b">◆</span>
+      <Logo />
+      <p className="protection-pill">BIO-BASED PROTECTION AGAINST MOSQUITOES</p>
+      <img
+        className="welcome-guardian"
+        src={img("brand-2026.png")}
+        alt="MOMONO guardian waving among leaves"
+      />
+      <h1>
+        A safer, greener
+        <br />
+        tomorrow for the ones
+        <br />
+        you love.
+      </h1>
+      <button className="orange-cta" onClick={onStart}>
+        Get Started <ArrowRight />
+      </button>
+      <div className="pager">
+        <i />
+        <i />
+        <i />
       </div>
+    </main>
+  );
+}
+function TopBar({ points, cartCount, onCart }) {
+  return (
+    <header className="app-topbar">
+      <Logo />
+      <div className="top-actions">
+        <span className="points-chip">
+          <Leaf />
+          <b>{points}</b>
+          <small>points</small>
+        </span>
+        <button
+          className="round-button"
+          onClick={onCart}
+          aria-label={`Open bag with ${cartCount} items`}
+        >
+          <ShoppingBag />
+          {cartCount > 0 && <i>{cartCount}</i>}
+        </button>
+      </div>
+    </header>
+  );
+}
 
-      <header className="navbar">
-        <button className="icon-button mobile-menu-button" aria-label="Open menu" onClick={() => setMobileOpen(true)}><Menu /></button>
-        <a className="brand" href="#top" aria-label="MOMONO home">
-          <img src={asset("momono-logo.png")} alt="MOMONO" />
-        </a>
-        <nav className="desktop-nav" aria-label="Main navigation">
-          <a href="#shop">Shop</a>
-          <a href="#guardians">Guardians</a>
-          <a href="#how-it-works">How it works</a>
-          <a href="#our-story">Our story</a>
-        </nav>
-        <div className="nav-actions">
-          <button className="icon-button" aria-label="Search" onClick={() => setSearchOpen(true)}><Search /></button>
-          <button className="cart-button" onClick={() => setCartOpen(true)} aria-label={`Open cart with ${cartCount} items`}>
-            <ShoppingBag />
-            <span className="cart-label">Bag</span>
-            <span className="cart-count">{cartCount}</span>
-          </button>
-        </div>
-      </header>
-
-      <main id="top">
-        <section className="hero">
-          <img className="hero-image" src={asset("momono-world.png")} alt="Children and MOMONO guardian characters playing outdoors" />
-          <div className="hero-shade" />
-          <div className="hero-copy">
-            <div className="eyebrow light"><span /> Meet the guardian club</div>
-            <h1>Small clip.<br />Big adventures.</h1>
-            <p>Bio-based mosquito protection, reimagined as a tiny friend kids will love to take everywhere.</p>
-            <div className="hero-actions">
-              <button className="primary-button orange" onClick={scrollToShop}>Shop the collection <ArrowRight size={19} /></button>
-              <a className="text-link light-link" href="#how-it-works">See how it works <ChevronRight size={18} /></a>
-            </div>
-          </div>
-          <div className="hero-facts">
-            <div><Leaf /><span><strong>Bio-based</strong> gentle formula</span></div>
-            <div><ShieldCheck /><span><strong>Up to 3 days</strong> per pad</span></div>
-            <div><Recycle /><span><strong>Refillable</strong> less waste</span></div>
-          </div>
-        </section>
-
-        <section className="marquee" aria-label="MOMONO highlights">
-          <div className="marquee-track">
-            {Array.from({ length: 2 }).map((_, group) => (
-              <div className="marquee-group" key={group} aria-hidden={group === 1}>
-                <span>DEET FREE</span><i>✦</i><span>COLLECT THEM ALL</span><i>✦</i><span>CLIP & GO</span><i>✦</i><span>PLANT POWERED</span><i>✦</i>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="shop-section" id="shop">
-          <div className="section-heading split-heading">
-            <div>
-              <div className="eyebrow"><span /> The MOMONO essentials</div>
-              <h2>Shop MOMONO</h2>
-            </div>
-            <p>Start with one surprise guardian, then keep the protection going with individually sealed refill pads.</p>
-          </div>
-
-          <div className="shop-note">
-            <Sparkles size={16} />
-            <span>The five guardian characters are found only inside the Starter Blind Box—not sold separately.</span>
-          </div>
-
-          <div className="product-grid two-product-grid">
-            {products.map((product) => (
-              <article
-                className={`product-card ${product.id === "starter" ? "reveal-product" : ""}`}
-                key={product.id}
-                style={{ "--accent": product.color }}
-                onClick={() => product.id === "starter" && setBlindBoxOpen(true)}
-              >
-                <div className="product-image-wrap">
-                  <span className="product-badge">{product.badge}</span>
-                  <button
-                    className={`heart-button ${liked.includes(product.id) ? "liked" : ""}`}
-                    onClick={(event) => { event.stopPropagation(); setLiked((ids) => ids.includes(product.id) ? ids.filter((id) => id !== product.id) : [...ids, product.id]); }}
-                    aria-label={`Save ${product.name}`}
-                  >
-                    <Heart fill={liked.includes(product.id) ? "currentColor" : "none"} />
-                  </button>
-                  <img src={product.image} alt={product.name} />
-                  <button className="quick-add" onClick={(event) => { event.stopPropagation(); addToCart(product); }}>Quick add <Plus size={18} /></button>
-                </div>
-                <div className="product-info">
-                  <div>
-                    <h3>{product.name}</h3>
-                    <p>{product.subtitle}</p>
-                    {product.id === "starter" && <span className="reveal-hint">Click to reveal all 5 possible guardians <ArrowRight size={13} /></span>}
-                  </div>
-                  <strong>{formatPrice(product.price)}</strong>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="how-section" id="how-it-works">
-          <div className="how-visual">
-            <img src={asset("starter-box.png")} alt="MOMONO starter blind box, clip and refill pad" />
-            <span className="orbit orbit-one">3 DAYS</span>
-            <span className="orbit orbit-two">DEET FREE</span>
-          </div>
-          <div className="how-content">
-            <div className="eyebrow light"><span /> Simple by design</div>
-            <h2>Protection in<br />three tiny steps.</h2>
-            <div className="steps">
-              <div className="step"><span>01</span><div><h3>Open your guardian</h3><p>Twist open the round shield on the front.</p></div></div>
-              <div className="step"><span>02</span><div><h3>Pop in a fresh pad</h3><p>One individually sealed pad gives up to three days of gentle protection.</p></div></div>
-              <div className="step"><span>03</span><div><h3>Clip, go, explore</h3><p>Attach it to a shirt, backpack, stroller, or pet accessory.</p></div></div>
-            </div>
-            <button className="primary-button cream" onClick={() => addToCart(products[0])}>Get the starter box <ArrowRight size={19} /></button>
-          </div>
-        </section>
-
-        <section className="benefits-section" id="our-story">
-          <div className="section-heading centered">
-            <div className="eyebrow"><span /> Why MOMONO?</div>
-            <h2>Made for little ones.<br />Thoughtful in every detail.</h2>
-          </div>
-          <div className="benefit-grid">
-            {[
-              { image: asset("benefit-bio.png"), title: "Bio-based active protection", copy: "Catnip oil and lemon eucalyptus oil meet in a gentle, plant-forward formula." },
-              { image: asset("benefit-guardians.png"), title: "Five stories to collect", copy: "School, Rain, Birthday, Dream—and a rare Secret Guardian waiting to be found." },
-              { image: asset("benefit-refill.png"), title: "Refillable by nature", copy: "Keep the character you love. Replace only the small compressed pad inside." },
-            ].map((benefit, index) => (
-              <article className="benefit-card" key={benefit.title}>
-                <div className="benefit-number">0{index + 1}</div>
-                <img src={benefit.image} alt="" />
-                <div className="benefit-copy"><h3>{benefit.title}</h3><p>{benefit.copy}</p></div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="collector-section" id="guardians">
-          <div className="collector-copy">
-            <div className="eyebrow light"><span /> Your guardian is waiting</div>
-            <h2>One world.<br />Five tiny heroes.</h2>
-            <p>Every MOMONO guardian has a different personality, colour, and story—but they all share one mission: helping make outdoor moments feel carefree.</p>
-            <button className="primary-button orange" onClick={() => setBlindBoxOpen(true)}>See who’s inside <ArrowRight size={19} /></button>
-          </div>
-          <div className="guardian-stack" aria-label="The five MOMONO guardians">
-            {guardians.map((guardian, index) => (
-              <div className="guardian-mini" key={guardian.id} style={{ "--left": `${index * 15}%`, "--rotate": `${(index - 2) * 3}deg`, "--rise": index % 2 ? "70px" : "15px" }}>
-                <img src={guardian.image} alt={guardian.name} />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="newsletter-section">
-          <div>
-            <span className="newsletter-icon"><Sparkles /></span>
-            <h2>Join the Guardian Club</h2>
-            <p>Fresh drops, tiny stories, and outdoor tips—delivered gently.</p>
-          </div>
-          <form onSubmit={(event) => { event.preventDefault(); setToast("Welcome to the Guardian Club!"); event.currentTarget.reset(); }}>
-            <label className="sr-only" htmlFor="email">Email address</label>
-            <input id="email" type="email" required placeholder="Your email address" />
-            <button type="submit">Join now <ArrowRight size={18} /></button>
-          </form>
-        </section>
-      </main>
-
-      <footer>
-        <div className="footer-main">
-          <div className="footer-brand"><img src={asset("momono-logo.png")} alt="MOMONO" /><p>Your tiny guardian, everywhere.</p></div>
-          <div><h3>Explore</h3><a href="#shop">Shop all</a><a href="#guardians">Guardians</a><a href="#how-it-works">How it works</a></div>
-          <div><h3>Help</h3><a href="mailto:momonoguard@gmail.com">Contact us</a><a href="#faq">Shipping & returns</a><a href="#faq">FAQs</a></div>
-          <div><h3>Follow the adventure</h3><a href="https://instagram.com/momono.th">Instagram · @momono.th</a><a href="https://www.tiktok.com/@momono.th">TikTok · @momono.th</a><a href="tel:+66627790805">+66 62 779 0805</a></div>
-        </div>
-        <div className="footer-bottom"><span>© 2026 MOMONO by The Nexus</span><span>Made with little ones and the planet in mind.</span></div>
-      </footer>
-
-      {mobileOpen && (
-        <div className="full-overlay mobile-overlay">
-          <button className="overlay-close" onClick={() => setMobileOpen(false)} aria-label="Close menu"><X /></button>
-          <img src={asset("momono-logo.png")} alt="MOMONO" />
-          <nav>{[["Shop", "#shop"], ["Guardians", "#guardians"], ["How it works", "#how-it-works"], ["Our story", "#our-story"]].map(([label, link]) => <a key={link} href={link} onClick={() => setMobileOpen(false)}>{label}<ArrowRight /></a>)}</nav>
-        </div>
-      )}
-
-      {searchOpen && (
-        <div className="full-overlay search-overlay">
-          <button className="overlay-close" onClick={() => { setSearchOpen(false); setQuery(""); }} aria-label="Close search"><X /></button>
-          <div className="search-box"><Search /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search guardians and refills" /></div>
-          <p className="search-caption">{query ? `${searchResults.length} results` : "Popular right now"}</p>
-          <div className="search-results">
-            {searchResults.map((product) => (
-              <button key={product.id} onClick={() => { product.id === "starter" ? setBlindBoxOpen(true) : addToCart(product); setSearchOpen(false); setQuery(""); }}>
-                <img src={product.image} alt="" /><span><strong>{product.name}</strong><small>{formatPrice(product.price)}</small></span><Plus />
-              </button>
-            ))}
-            {searchResults.length === 0 && <div className="empty-state"><Search /><h3>No products found</h3><p>Try “starter”, “blind box”, or “refill”.</p></div>}
+function HomePage({
+  setTab,
+  hintCost,
+  redeemedHints,
+  hintLimitReached,
+  onUseHint,
+}) {
+  return (
+    <div className="page home-page">
+      <section className="home-hero">
+        <div>
+          <h1>
+            Welcome to MOMONO!
+          </h1>
+          <p>
+            Little steps.
+            <br />
+            Big protection.
+          </p>
+          <div className="active-card">
+            <ShieldCheck />
+            <span>
+              <b>Guardian Active</b>
+              <small>5 days left</small>
+            </span>
           </div>
         </div>
-      )}
-
-      {blindBoxOpen && (
-        <div className="reveal-layer" role="dialog" aria-modal="true" aria-label="Guardian Starter Blind Box characters">
-          <button className="reveal-backdrop" onClick={() => setBlindBoxOpen(false)} aria-label="Close blind box details" />
-          <section className="reveal-modal">
-            <button className="reveal-close" onClick={() => setBlindBoxOpen(false)} aria-label="Close"><X /></button>
-            <div className="reveal-product-panel">
-              <div className="eyebrow"><span /> One surprise inside</div>
-              <h2>Guardian Starter<br />Blind Box</h2>
-              <p className="reveal-intro">Every box contains <strong>one mystery Guardian Clip</strong> plus <strong>two individually sealed refill pads</strong>.</p>
-              <img src={asset("starter-box.png")} alt="MOMONO Guardian Starter Blind Box" />
-              <div className="reveal-buy-row"><strong>{formatPrice(products[0].price)}</strong><button onClick={() => { addToCart(products[0]); setBlindBoxOpen(false); }}>Add blind box <ShoppingBag size={18} /></button></div>
-            </div>
-            <div className="reveal-characters-panel">
-              <span className="reveal-kicker">WHO WILL YOU GET?</span>
-              <h3>Meet all 5 guardians</h3>
-              <p>The character inside is a surprise. Collect the core guardians and look out for the rare Secret Guardian.</p>
-              <div className="reveal-grid">
-                {guardians.map((guardian) => (
-                  <article key={guardian.id} style={{ "--guardian-color": guardian.color }}>
-                    {guardian.id === "secret" && <span>RARE</span>}
-                    <img src={guardian.image} alt={guardian.name} />
-                    <div><strong>{guardian.name}</strong><small>{guardian.note}</small></div>
-                  </article>
+        <div
+          className="home-guardian-scene"
+          role="img"
+          aria-label="Children and MOMONO Guardians protected while playing outdoors"
+          style={{ backgroundImage: `url(${img("home-playground.png")})` }}
+        />
+      </section>
+      <section className="quick-grid">
+        <button
+          onClick={() => alert("Demo QR scanner: connect a Starter Blind Box.")}
+        >
+          <ScanLine />
+          <b>Scan QR</b>
+          <span>Link a box</span>
+          <ArrowRight />
+        </button>
+        <button onClick={() => setTab("game")}>
+          <Gamepad2 />
+          <b>Play Game</b>
+          <span>Learn & earn</span>
+          <ArrowRight />
+        </button>
+        <button onClick={() => setTab("shop")}>
+          <ShoppingBag />
+          <b>Buy Refills</b>
+          <span>Keep protecting</span>
+          <ArrowRight />
+        </button>
+      </section>
+      <section className="home-cards">
+        <article>
+          <div className="card-title">
+            <h2>My Guardians</h2>
+          </div>
+          <div className="guardian-collection" aria-label="Five collected Guardians including the Secret Guardian">
+            {["school-new", "rain-new", "dream-new", "birthday-new", "secret-new"].map((guardian) => (
+              <span key={guardian}>
+                <img
+                  className="full-guardian"
+                  src={img(`${guardian}.png`)}
+                  alt={`${guardian.replace("-new", "")} Guardian`}
+                />
+                <Check />
+              </span>
+            ))}
+          </div>
+          <p>
+            Collect all 5 to unlock the <b>Secret Guardian!</b>
+          </p>
+        </article>
+        <article className="hint-card">
+          <div className="card-title">
+            <h2>Daily Hint</h2>
+            <Leaf />
+          </div>
+          <Sparkles />
+          {redeemedHints.length === 0 ? (
+            <p>Reveal one Guardian that will not be inside your next blind box.</p>
+          ) : (
+            <div className="redeemed-hints" aria-live="polite">
+              <b>Not in your next blind box:</b>
+              <ol>
+                {redeemedHints.map((guardian, index) => (
+                  <li key={`${guardian}-${index}`}>
+                    <Check /> {guardian}
+                  </li>
                 ))}
-              </div>
-              <div className="blind-box-rule"><Sparkles size={17} /><span>Guardians are blind-box surprises and cannot be selected or purchased separately.</span></div>
+              </ol>
             </div>
-          </section>
-        </div>
-      )}
-
-      {cartOpen && (
-        <div className="drawer-layer" role="dialog" aria-modal="true" aria-label="Shopping bag">
-          <button className="drawer-backdrop" onClick={() => setCartOpen(false)} aria-label="Close cart" />
-          <aside className="cart-drawer">
-            <div className="drawer-header"><div><span>YOUR BAG</span><h2>{cartCount} {cartCount === 1 ? "item" : "items"}</h2></div><button className="icon-button" onClick={() => setCartOpen(false)}><X /></button></div>
-            <div className="shipping-progress"><div><Check size={14} /></div><p>{subtotal >= 799 ? "Your delivery is on us!" : `${formatPrice(799 - subtotal)} away from free delivery`}</p><span><i style={{ width: `${Math.min(100, (subtotal / 799) * 100)}%` }} /></span></div>
-            <div className="cart-items">
-              {cart.length === 0 ? (
-                <div className="empty-cart"><ShoppingBag /><h3>Your adventure bag is empty</h3><p>Choose a Starter Blind Box or Refill Pack.</p><button className="primary-button green" onClick={() => { setCartOpen(false); scrollToShop(); }}>Shop MOMONO</button></div>
-              ) : cart.map((item) => (
-                <div className="cart-item" key={item.id}>
-                  <div className="cart-item-image"><img src={item.image} alt="" /></div>
-                  <div className="cart-item-detail"><strong>{item.name}</strong><small>{item.subtitle}</small><div className="quantity-control"><button onClick={() => updateQuantity(item.id, -1)}><Minus /></button><span>{item.quantity}</span><button onClick={() => updateQuantity(item.id, 1)}><Plus /></button></div></div>
-                  <strong>{formatPrice(item.price * item.quantity)}</strong>
-                </div>
-              ))}
-            </div>
-            {cart.length > 0 && <div className="drawer-footer"><div><span>Subtotal</span><strong>{formatPrice(subtotal)}</strong></div><p>Delivery calculated at checkout.</p><button onClick={() => setToast("Checkout is ready for integration.")}>Checkout <ArrowRight /></button></div>}
-          </aside>
-        </div>
-      )}
-
-      {toast && <div className="toast"><Check /> {toast}</div>}
+          )}
+          <span className="hint-cost">
+            {hintLimitReached ? <Check /> : <Leaf />}
+            {hintLimitReached
+              ? "2 of 2 hints redeemed"
+              : `${hintCost.toLocaleString()} points`}
+          </span>
+          <button onClick={onUseHint} disabled={hintLimitReached}>
+            {hintLimitReached ? "All Hints Revealed" : "Reveal Hint"}
+          </button>
+        </article>
+      </section>
     </div>
   );
 }
 
-export default App;
+function ShopPage({ addToCart }) {
+  const [quantity, setQuantity] = useState(1);
+  return (
+    <div className="page shop-page">
+      <section className="product-pair">
+        {products.map((product) => (
+          <article key={product.id}>
+            <h2>
+              <Leaf />
+              {product.name}
+            </h2>
+            <p>{product.short}</p>
+            <img src={product.image} alt={product.name} />
+            <footer>
+              <strong>{money(product.price)}</strong>
+              <button onClick={() => addToCart(product, 1)}>
+                Add to bag <ShoppingBag />
+              </button>
+            </footer>
+          </article>
+        ))}
+      </section>
+      <section className="trust-row">
+        <span>
+          <ShieldCheck />
+          Controlled diffusion
+        </span>
+        <span>
+          <Leaf />
+          5-7 days per pad
+        </span>
+        <span>
+          <Gift />
+          Refill, reuse, return
+        </span>
+      </section>
+    </div>
+  );
+}
+
+function GamePage({ points, onEarn }) {
+  const [playing, setPlaying] = useState(true);
+  const [caught, setCaught] = useState(0);
+  const bugs = useMemo(
+    () =>
+      Array.from({ length: 6 }, (_, i) => ({
+        id: i,
+        left: `${12 + ((i * 17) % 73)}%`,
+        top: `${18 + ((i * 23) % 55)}%`,
+      })),
+    [],
+  );
+  return (
+    <div className="page game-page">
+      <div className="game-heading">
+        <div>
+          <h1>
+            Catch the <em>Mosquitoes!</em>
+          </h1>
+          <p>Help MOMONO keep the garden safe.</p>
+        </div>
+      </div>
+      <section className={`game-field ${playing ? "playing" : "paused"}`}>
+        <img
+          className="game-art"
+          src={img("game-screen-2026.png")}
+          alt="MOMONO Guardian in a bright garden"
+        />
+        <div className="score-board">
+          <strong>{points.toLocaleString()}</strong>
+          <span>points</span>
+        </div>
+        <button
+          className="pause"
+          onClick={() => setPlaying((p) => !p)}
+          aria-label={playing ? "Pause game" : "Resume game"}
+        >
+          {playing ? <Pause /> : <Play />}
+        </button>
+        {bugs.map((bug) => (
+          <button
+            className="mosquito"
+            key={`${bug.id}-${caught}`}
+            style={{ left: bug.left, top: bug.top }}
+            disabled={!playing}
+            onClick={() => {
+              setCaught((c) => c + 1);
+              onEarn(50);
+            }}
+          >
+            🦟
+          </button>
+        ))}
+        <div className="game-message">Catch More, Breathe Happier!</div>
+      </section>
+      <p className="game-tip">
+        <Sparkles />
+        Tap a mosquito to earn 50 demo Guardian Points. Caught: {caught}
+      </p>
+    </div>
+  );
+}
+
+function PointsPage({ points, redeem }) {
+  return (
+    <div className="page points-page">
+      <div className="rewards-heading">
+        <h1>My Rewards</h1>
+        <p>Collect points and redeem rewards.</p>
+      </div>
+      <section className="balance">
+        <Leaf />
+        <div>
+          <span>Your Points Balance</span>
+          <strong>{points.toLocaleString()}</strong> points
+        </div>
+      </section>
+      <section className="journey">
+        <h2>Your Guardian Journey</h2>
+        <p>Collect more points and unlock greater rewards!</p>
+        <div className="levels">
+          {[
+            [500, "Sprout"],
+            [1000, "Leaf"],
+            [2000, "Branch"],
+            [3000, "Forest"],
+          ].map(([value, label]) => (
+            <div key={value} className={points >= value ? "unlocked" : ""}>
+              <i>{points >= value ? <Check /> : "🔒"}</i>
+              <b>{value.toLocaleString()}</b>
+              <span>
+                {label}
+                <br />
+                Guardian
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="reward-card">
+        <img src={img("refill-2026.png")} alt="Guardian Refill Pack" />
+        <div>
+          <span>REWARD</span>
+          <h2>฿50 OFF</h2>
+          <h3>Refill Pack</h3>
+          <p>Use 500 points to unlock this demo reward.</p>
+          <button onClick={redeem} disabled={points < 500}>
+            Redeem <Leaf />
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function ProfilePage({ points, orders, setTab }) {
+  return (
+    <div className="page profile-page">
+      <div className="profile-title">
+        <h1>
+          <Leaf />
+          My Guardian
+          <Leaf />
+        </h1>
+        <button>
+          <Settings />
+        </button>
+      </div>
+      <section className="profile-card">
+        <img src={img("profile-guardian.png")} alt="School Guardian" />
+        <div>
+          <h2>MOMONO Friend</h2>
+          <p>Tiny steps, big protection.</p>
+          <span>
+            <Leaf />
+            <b>Member since</b>
+            <small>September 2026</small>
+          </span>
+          <span>
+            <ShieldCheck />
+            <b>Guardian level</b>
+            <small>Level {points >= 1000 ? 2 : 1}</small>
+          </span>
+        </div>
+      </section>
+      <section className="profile-links">
+        <button>
+          <Gift />
+          <span>
+            <b>My Orders</b>
+            <small>
+              {orders} demo {orders === 1 ? "order" : "orders"}
+            </small>
+          </span>
+          <ChevronRight />
+        </button>
+        <button onClick={() => setTab("points")}>
+          <Trophy />
+          <span>
+            <b>My Points</b>
+            <small>{points.toLocaleString()} points available</small>
+          </span>
+          <ChevronRight />
+        </button>
+        <button>
+          <CircleUserRound />
+          <span>
+            <b>Help & Support</b>
+            <small>Find answers to your questions</small>
+          </span>
+          <ChevronRight />
+        </button>
+        <button>
+          <Settings />
+          <span>
+            <b>Settings</b>
+            <small>Manage demo preferences</small>
+          </span>
+          <ChevronRight />
+        </button>
+      </section>
+    </div>
+  );
+}
+
+function Bag({ cart, onClose, update, onOrder }) {
+  const [checkout, setCheckout] = useState(false);
+  const [done, setDone] = useState(false);
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+  return (
+    <div className="modal-layer">
+      <button
+        className="modal-backdrop"
+        onClick={onClose}
+        aria-label="Close bag"
+      />
+      <aside
+        className="bag-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Shopping bag"
+      >
+        <button className="modal-close" onClick={onClose}>
+          <X />
+        </button>
+        {done ? (
+          <div className="bag-success">
+            <i>
+              <Check />
+            </i>
+            <h2>Demo order complete!</h2>
+            <p>
+              No payment was charged, no order was shipped, and no personal
+              information was stored.
+            </p>
+            <button className="green-cta" onClick={onClose}>
+              Continue exploring
+            </button>
+          </div>
+        ) : (
+          <>
+            <h2>{checkout ? "Demo checkout" : "Your bag"}</h2>
+            {!checkout ? (
+              <>
+                {cart.length === 0 ? (
+                  <div className="empty">
+                    <ShoppingBag />
+                    <p>Your bag is ready for a tiny adventure.</p>
+                  </div>
+                ) : (
+                  cart.map((item) => (
+                    <div className="bag-item" key={item.id}>
+                      <img src={item.image} alt="" />
+                      <span>
+                        <b>{item.name}</b>
+                        <small>{item.short}</small>
+                        <div className="quantity">
+                          <button onClick={() => update(item.id, -1)}>
+                            <Minus />
+                          </button>
+                          <b>{item.quantity}</b>
+                          <button onClick={() => update(item.id, 1)}>
+                            <Plus />
+                          </button>
+                        </div>
+                      </span>
+                      <strong>{money(item.price * item.quantity)}</strong>
+                    </div>
+                  ))
+                )}
+                {cart.length > 0 && (
+                  <footer>
+                    <span>
+                      Subtotal <b>{money(subtotal)}</b>
+                    </span>
+                    <small>Demo checkout. No money will be charged.</small>
+                    <button
+                      className="orange-cta"
+                      onClick={() => setCheckout(true)}
+                    >
+                      Checkout <ArrowRight />
+                    </button>
+                  </footer>
+                )}
+              </>
+            ) : (
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  onOrder();
+                  setDone(true);
+                }}
+              >
+                <p className="demo-note">
+                  This is a simulated transaction. Nothing is sent to a server.
+                </p>
+                <label>
+                  Name
+                  <input required placeholder="Alex Green" />
+                </label>
+                <label>
+                  Email
+                  <input required type="email" placeholder="alex@example.com" />
+                </label>
+                <label>
+                  Delivery address
+                  <textarea
+                    required
+                    placeholder="123 Garden Lane, Bangkok 10110"
+                  />
+                </label>
+                <div className="order-total">
+                  <span>Demo total</span>
+                  <b>{money(subtotal + (subtotal >= 799 ? 0 : 40))}</b>
+                </div>
+                <button className="green-cta">
+                  Place demo order <ArrowRight />
+                </button>
+              </form>
+            )}
+          </>
+        )}
+      </aside>
+    </div>
+  );
+}
+
+export default function App() {
+  const [started, setStarted] = useState(false);
+  const [tab, setTab] = useState("home");
+  const [points, setPoints] = useState(320);
+  const [cart, setCart] = useState([]);
+  const [bagOpen, setBagOpen] = useState(false);
+  const [toast, setToast] = useState("");
+  const [orders, setOrders] = useState(0);
+  const [hintUses, setHintUses] = useState(0);
+  const [redeemedHints, setRedeemedHints] = useState([]);
+  const hintCost = 100 * 2 ** hintUses;
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  useEffect(() => {
+    if (!toast) return;
+    const id = setTimeout(() => setToast(""), 1800);
+    return () => clearTimeout(id);
+  }, [toast]);
+  const navigate = (id) => {
+    setTab(id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const addToCart = (product, quantity) => {
+    setCart((items) => {
+      const found = items.find((item) => item.id === product.id);
+      return found
+        ? items.map((item) =>
+            item.id === product.id
+              ? { ...item, quantity: item.quantity + quantity }
+              : item,
+          )
+        : [...items, { ...product, quantity }];
+    });
+    setToast(`${product.name} added to your bag`);
+  };
+  const update = (id, change) =>
+    setCart((items) =>
+      items
+        .map((item) =>
+          item.id === id ? { ...item, quantity: item.quantity + change } : item,
+        )
+        .filter((item) => item.quantity > 0),
+    );
+  const earn = (value) => {
+    setPoints((p) => p + value);
+    setToast(`+${value} Guardian Points`);
+  };
+  const useHint = () => {
+    if (hintUses >= 2) {
+      setToast("You have redeemed both hints for this blind box");
+      return;
+    }
+    if (points < hintCost) {
+      setToast(`You need ${hintCost - points} more points for this hint`);
+      return;
+    }
+    const guardians = [
+      "School Guardian",
+      "Rain Guardian",
+      "Dream Guardian",
+      "Birthday Guardian",
+      "Secret Guardian",
+    ];
+    setPoints((value) => value - hintCost);
+    setRedeemedHints((hints) => [
+      ...hints,
+      guardians[hintUses % guardians.length],
+    ]);
+    setHintUses((value) => value + 1);
+    setToast(`Hint revealed for ${hintCost} points`);
+  };
+  const redeem = () => {
+    if (points < 500) return;
+    setPoints((p) => p - 500);
+    setToast("฿50 refill reward unlocked!");
+  };
+  if (!started) return <Welcome onStart={() => setStarted(true)} />;
+  return (
+    <div className="app">
+      <TopBar
+        points={points}
+        cartCount={cartCount}
+        onCart={() => setBagOpen(true)}
+      />
+      <main className="app-content">
+        {tab === "home" && (
+          <HomePage
+            setTab={navigate}
+            hintCost={hintCost}
+            redeemedHints={redeemedHints}
+            hintLimitReached={hintUses >= 2}
+            onUseHint={useHint}
+          />
+        )}{" "}
+        {tab === "shop" && <ShopPage addToCart={addToCart} />}{" "}
+        {tab === "game" && <GamePage points={points} onEarn={earn} />}{" "}
+        {tab === "points" && <PointsPage points={points} redeem={redeem} />}{" "}
+        {tab === "profile" && (
+          <ProfilePage points={points} orders={orders} setTab={navigate} />
+        )}
+      </main>
+      <BottomNav active={tab} onChange={navigate} />
+      {bagOpen && (
+        <Bag
+          cart={cart}
+          update={update}
+          onClose={() => setBagOpen(false)}
+          onOrder={() => {
+            setOrders((n) => n + 1);
+            setCart([]);
+          }}
+        />
+      )}
+      {toast && (
+        <div className="toast" role="status">
+          <Check />
+          {toast}
+        </div>
+      )}
+    </div>
+  );
+}
