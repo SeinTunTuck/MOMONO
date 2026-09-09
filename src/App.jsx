@@ -8,8 +8,10 @@ import {
   Gift,
   Home,
   Leaf,
+  Mail,
   Minus,
   Pause,
+  Phone,
   Play,
   Plus,
   ScanLine,
@@ -460,6 +462,33 @@ function ProfilePage({ points, orders, setTab }) {
           </span>
           <ChevronRight />
         </button>
+      </section>
+      <section className="contact-card" aria-labelledby="momono-contact-title">
+        <div className="contact-card-heading">
+          <span><Leaf /></span>
+          <div>
+            <small>Stay connected</small>
+            <h2 id="momono-contact-title">MOMONO Contact</h2>
+          </div>
+        </div>
+        <div className="contact-grid">
+          <a href="https://www.facebook.com/MomonoThailand" target="_blank" rel="noreferrer">
+            <i className="contact-symbol" aria-hidden="true">f</i>
+            <span><small>Facebook</small><b>Momono Thailand</b></span>
+          </a>
+          <a href="tel:+66627790805">
+            <i><Phone /></i>
+            <span><small>Phone</small><b>+66 62 779 0805</b></span>
+          </a>
+          <a href="mailto:momonoguard@gmail.com">
+            <i><Mail /></i>
+            <span><small>Email</small><b>momonoguard@gmail.com</b></span>
+          </a>
+          <a href="https://www.tiktok.com/@momono.th" target="_blank" rel="noreferrer">
+            <i className="contact-symbol contact-note" aria-hidden="true">♪</i>
+            <span><small>TikTok</small><b>@momono.th</b></span>
+          </a>
+        </div>
       </section>
     </div>
   );
