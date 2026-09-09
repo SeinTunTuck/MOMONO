@@ -472,7 +472,7 @@ function ProfilePage({ points, orders, setTab }) {
           </div>
         </div>
         <div className="contact-grid">
-          <a href="https://www.facebook.com/MomonoThailand" target="_blank" rel="noreferrer">
+          <a href="https://www.facebook.com/share/1DbgvnGaLZ/?mibextid=wwXIfr" target="_blank" rel="noreferrer">
             <i className="contact-symbol" aria-hidden="true">f</i>
             <span><small>Facebook</small><b>Momono Thailand</b></span>
           </a>
